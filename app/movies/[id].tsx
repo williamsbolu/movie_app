@@ -2,7 +2,15 @@ import { icons } from "@/constants/icons";
 import { fetchMovieDetails } from "@/services/api";
 import useFetch from "@/services/useFetch";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  Image,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 interface MovieInfoProps {
   label: string;
@@ -23,8 +31,15 @@ const MovieDetails = () => {
   const { id } = useLocalSearchParams();
 
   const { data: movie, loading } = useFetch(() =>
-    fetchMovieDetails(id as string)
+    fetchMovieDetails(id as string),
   );
+
+  if (loading)
+    return (
+      <SafeAreaView className="bg-primary flex-1">
+        <ActivityIndicator />
+      </SafeAreaView>
+    );
 
   return (
     <View className="bg-primary flex-1">
@@ -73,7 +88,7 @@ const MovieDetails = () => {
             <MovieInfo
               label="Revenue"
               value={`$${Math.round(
-                (movie?.revenue ?? 0) / 1_000_000
+                (movie?.revenue ?? 0) / 1_000_000,
               )} million`}
             />
           </View>
